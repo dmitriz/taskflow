@@ -34,11 +34,12 @@ export async function fetch_and_process_emails() {
       });
 
       const payload = msgData.data.payload;
-      let body = payload?.body?.data
-        ? decode_base64(payload.body.data)
-        : payload?.parts?.[0]?.body?.data
-          ? decode_base64(payload.parts[0].body.data)
-          : null;
+      let body = null;
+      if (payload?.body?.data) {
+        body = decode_base64(payload.body.data);
+      } else if (payload?.parts?.[0]?.body?.data) {
+        body = decode_base64(payload.parts[0].body.data);
+      }
 
       // Filter out HTML parts if present
       if (payload?.mimeType === 'text/html') {
@@ -50,7 +51,9 @@ export async function fetch_and_process_emails() {
 
       const cleanBody = remove_signature(body.trim());
       const lines = cleanBody.split('\n');
-      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map(l => l.trim()).join('\n')}`;
+      const taskPrefix = SETTINGS.TASK_PREFIX || "- "; // Use configurable task prefix
+      const formatted = `${taskPrefix}${lines[0].trim()}
+${lines.slice(1).map(l => l.trim()).join('\n')}`;
       await write_task(formatted);
 
       await gmail.users.messages.modify({

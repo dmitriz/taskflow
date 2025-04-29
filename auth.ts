@@ -5,7 +5,7 @@ import http from 'http';
 import { default as open } from 'open';
 import destroyer from 'server-destroy';
 import { fileURLToPath } from 'url';
-import { FILES } from './config.js';
+import { FILES, SETTINGS } from './config.js';
 import { OAuth2Client } from 'google-auth-library';
 import crypto from 'crypto';
 
@@ -44,7 +44,7 @@ export async function authorize_user() {
   const oAuth2Client = new google.auth.OAuth2(
     client_id,
     client_secret,
-    'http://localhost:3000/oauth2callback'
+    SETTINGS.OAUTH_REDIRECT_URI // Use configurable redirect URI
   );
 
   const authorizeUrl = oAuth2Client.generateAuthUrl({
