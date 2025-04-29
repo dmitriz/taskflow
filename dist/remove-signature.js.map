@@ -1,0 +1,1 @@
+{"version":3,"file":"remove-signature.js","sourceRoot":"","sources":["../remove-signature.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,aAAa,CAAC;AAExC,MAAM,UAAU,gBAAgB,CAAC,UAAkB;IACjD,gEAAgE;IAChE,OAAO,UAAU,CAAC,KAAK,CAAC,SAAS,CAAC,SAAS,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,EAAE,CAAC;AACzD,CAAC"}
