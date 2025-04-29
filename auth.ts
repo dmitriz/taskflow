@@ -5,11 +5,12 @@ import http from 'http';
 import { default as open } from 'open';
 import destroyer from 'server-destroy';
 import { fileURLToPath } from 'url';
+import { FILES } from './config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const CREDENTIALS_PATH = path.join(__dirname, 'secrets', 'credentials.json');
-const TOKEN_PATH = path.join(__dirname, 'secrets', 'token.json');
+const CREDENTIALS_PATH = path.join(__dirname, 'secrets', FILES.CREDENTIALS);
+const TOKEN_PATH = path.join(__dirname, 'secrets', FILES.TOKEN);
 
 export async function authorize() {
   let client = await loadSavedCredentialsIfExist();

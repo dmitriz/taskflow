@@ -1,5 +1,6 @@
 export enum SETTINGS {
   MAX_EMAILS_TO_FETCH = 10,
+  NEWLINES_AFTER_TASK = 3,
 }
 
 export enum QUERY_FILTERS {
@@ -8,4 +9,10 @@ export enum QUERY_FILTERS {
 
 export enum SIGNATURE {
   SEPARATOR = 'Best wishes',
+}
+
+export enum FILES {
+  TASKS = 'tasks.md',
+  CREDENTIALS = 'credentials.json',
+  TOKEN = 'token.json',
 }

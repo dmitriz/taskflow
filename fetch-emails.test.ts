@@ -2,8 +2,9 @@ import { it, expect, beforeEach, afterEach, vi } from 'vitest';
 import nock from 'nock';
 import fs from 'fs/promises';
 import path from 'path';
+import { FILES } from './config.js';
 
-const TASKS_PATH = path.join(process.cwd(), 'tasks.md');
+const TASKS_PATH = path.join(process.cwd(), FILES.TASKS);
 
 // Mock fs/promises module with proper default export
 vi.mock('fs/promises', async () => {

@@ -1,8 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { SETTINGS, FILES } from './config.js';
 
-const TASKS_FILE = path.join(process.cwd(), 'tasks.md');
+const TASKS_FILE = path.join(process.cwd(), FILES.TASKS);
 
 export async function writeTask(task: string) {
-  await fs.appendFile(TASKS_FILE, task + '\n\n\n', 'utf8');
+  const newlines = '\n'.repeat(SETTINGS.NEWLINES_AFTER_TASK);
+  await fs.appendFile(TASKS_FILE, task + newlines, 'utf8');
 }
