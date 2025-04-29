@@ -9,7 +9,7 @@ function decode_base64(data: string): string {
   return Buffer.from(data, 'base64').toString('utf-8');
 }
 
-export async function fetch_emails() {
+export async function fetch_and_process_emails() {
   const auth = await authorize_user() as OAuth2Client;
   const gmail = google.gmail({ version: 'v1', auth });
 
@@ -25,7 +25,7 @@ export async function fetch_emails() {
   for (const msg of messages) {
     const msgId = msg.id;
     if (!msgId) continue;
-    
+
     try {
       const msgData = await gmail.users.messages.get({
         userId: 'me',
@@ -44,7 +44,7 @@ export async function fetch_emails() {
 
       const cleanBody = remove_signature(body.trim());
       const lines = cleanBody.split('\n');
-      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map((l: string) => l.trim()).join('\n')}`;
+      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map(l => l.trim()).join('\n')}`;
       await write_task(formatted);
 
       await gmail.users.messages.modify({
