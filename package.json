@@ -1,22 +1,29 @@
 {
-  "name": "gmail-task-capture",
-  "version": "1.0.0",
+  "name": "g-capture",
+  "version": "0.0.1",
   "type": "module",
-  "main": "./index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "engines": {
+    "node": ">=18"
   },
   "scripts": {
     "start": "node dist/fetch-emails.js",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "build": "tsc && [ -d secrets ] && cp -r secrets dist/secrets || echo 'No secrets directory to copy'",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc && [ -d secrets ] && cp -r secrets dist/secrets || echo 'No secrets directory to copy'",
     "prepublish": "npm run build",
     "lint": "eslint . --ext .ts,.js",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "npmci": "npm run lint && npm test && npm run type-check"
   },
   "dependencies": {
     "googleapis": "^148.0.0",
