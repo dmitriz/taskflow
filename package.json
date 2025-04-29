@@ -2,11 +2,11 @@
   "name": "gmail-task-capture",
   "version": "1.0.0",
   "type": "module",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
@@ -16,7 +16,8 @@
     "build": "tsc && [ -d secrets ] && cp -r secrets dist/secrets || echo 'No secrets directory to copy'",
     "prepublish": "npm run build",
     "lint": "eslint . --ext .ts,.js",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "ci": "npm run lint && npm test && npm run type-check"
   },
   "dependencies": {
     "googleapis": "^148.0.0",
