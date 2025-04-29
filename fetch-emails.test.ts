@@ -2,12 +2,13 @@ import { it, expect, beforeEach, afterEach, vi } from 'vitest';
 import nock from 'nock';
 import fs from 'fs/promises';
 import path from 'path';
+import { FILES } from './config.js';
 
-const TASKS_PATH = path.join(process.cwd(), 'tasks.md');
+const TASKS_PATH = path.join(process.cwd(), FILES.TASKS);
 
 // Mock fs/promises module with proper default export
 vi.mock('fs/promises', async () => {
-  const mockReadFile = vi.fn().mockImplementation((path, options) => {
+  const mockReadFile = vi.fn().mockImplementation((path) => {
     // Mock credentials file
     if (path.includes('credentials.json')) {
       return Promise.resolve(JSON.stringify({
@@ -85,7 +86,7 @@ vi.mock('googleapis', () => {
 
 // Simple mock for auth
 vi.mock('./auth.js', () => ({
-  authorize: vi.fn().mockResolvedValue({})
+  authorize_user: vi.fn().mockResolvedValue({})
 }));
 
 beforeEach(() => {
@@ -123,8 +124,8 @@ it('fetches emails and writes tasks', async () => {
     .reply(200, {});
 
   // Simulate the behavior of fetch-emails.js by manually calling the processor
-  const { fetchAndProcessEmails } = await import('./email-processor.js');
-  await fetchAndProcessEmails();
+  const { fetch_emails } = await import('./email-processor.js');
+  await fetch_emails();
 
   const content = await fs.readFile(TASKS_PATH, 'utf8');
   expect(content).toContain('- Test task');

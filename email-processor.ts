@@ -1,16 +1,16 @@
 import { google } from 'googleapis';
-import { authorize } from './auth.js';
-import { removeSignature } from './remove-signature.js';
-import { writeTask } from './tasks-writer.js';
+import { authorize_user } from './auth.js';
+import { remove_signature } from './remove-signature.js';
+import { write_task } from './tasks-writer.js';
 import { SETTINGS, QUERY_FILTERS } from './config.js';
 import { OAuth2Client } from 'google-auth-library';
 
-function decodeBase64(data: string): string {
+function decode_base64(data: string): string {
   return Buffer.from(data, 'base64').toString('utf-8');
 }
 
-export async function fetchAndProcessEmails() {
-  const auth = await authorize() as OAuth2Client;
+export async function fetch_and_process_emails() {
+  const auth = await authorize_user() as OAuth2Client;
   const gmail = google.gmail({ version: 'v1', auth });
 
   const listResponse = await gmail.users.messages.list({
@@ -25,7 +25,7 @@ export async function fetchAndProcessEmails() {
   for (const msg of messages) {
     const msgId = msg.id;
     if (!msgId) continue;
-    
+
     try {
       const msgData = await gmail.users.messages.get({
         userId: 'me',
@@ -34,26 +34,39 @@ export async function fetchAndProcessEmails() {
       });
 
       const payload = msgData.data.payload;
-      let body = payload?.body?.data
-        ? decodeBase64(payload.body.data)
-        : payload?.parts?.[0]?.body?.data
-          ? decodeBase64(payload.parts[0].body.data)
-          : null;
+      let body = null;
+      if (payload?.body?.data) {
+        body = decode_base64(payload.body.data);
+      } else if (payload?.parts?.[0]?.body?.data) {
+        body = decode_base64(payload.parts[0].body.data);
+      }
+
+      // Filter out HTML parts if present
+      if (payload?.mimeType === 'text/html') {
+        console.warn(`Skipping HTML email with ID: ${msgId}`);
+        continue;
+      }
 
       if (!body) continue;
 
-      const cleanBody = removeSignature(body.trim());
+      const cleanBody = remove_signature(body.trim());
       const lines = cleanBody.split('\n');
-      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map(l => l.trim()).join('\n')}`;
-      await writeTask(formatted);
+      const taskPrefix = SETTINGS.TASK_PREFIX || "- "; // Use configurable task prefix
+      const formatted = `${taskPrefix}${lines[0].trim()}
+${lines.slice(1).map(l => l.trim()).join('\n')}`;
+      await write_task(formatted);
 
       await gmail.users.messages.modify({
         userId: 'me',
         id: msgId,
         requestBody: { removeLabelIds: ['UNREAD'] },
       });
+
+      console.log(`Processed email with ID: ${msgId}`);
     } catch (err) {
       console.error(`Failed processing message ${msgId}:`, err);
     }
   }
 }
+
+export { fetch_and_process_emails as fetch_emails };
