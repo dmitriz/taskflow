@@ -5,5 +5,5 @@ export function remove_signature(email_body: string): string {
   if (separatorIndex === -1) {
     return email_body.trim();
   }
-  return email_body.substring(0, separatorIndex).trim();
+  return email_body.slice(0, separatorIndex).trim();
 }

@@ -1,20 +1,17 @@
-export const SETTINGS = {
-  MAX_EMAILS_TO_FETCH: 10,
-  NEWLINES_AFTER_TASK: 3,
-  OAUTH_REDIRECT_URI: 'http://localhost:3000/oauth2callback', // Add the redirect URI
-  TASK_PREFIX: '- ', // Default task prefix
+export const SIGNATURE = {
+  SEPARATOR: 'Best wishes',
 };
 
-export enum QUERY_FILTERS {
-  SELF_SENT_UNREAD = 'is:unread from:me to:me',
-}
+export const FILES = {
+  TASKS: 'tasks.md',
+};
 
-export enum SIGNATURE {
-  SEPARATOR = 'Best wishes',
-}
+export const QUERY_FILTERS = {
+  SELF_SENT_UNREAD: 'from:me is:unread',
+};
 
-export enum FILES {
-  TASKS = 'tasks.md',
-  CREDENTIALS = 'credentials.json',
-  TOKEN = 'token.json',
-}
+export const SETTINGS = {
+  MAX_EMAILS_TO_FETCH: 10,
+  TASK_PREFIX: '- ',
+  NEWLINES_AFTER_TASK: 2,
+};
