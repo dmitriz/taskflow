@@ -14,3 +14,5 @@ tasks.md
 /*.d.ts
 !eslint.config.js
 !vitest.config.js
+# Vitest cache directory
+.vitest/
