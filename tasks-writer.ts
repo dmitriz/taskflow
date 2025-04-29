@@ -3,7 +3,8 @@ import path from 'path';
 import { SETTINGS, FILES } from './config.js';
 import { fileURLToPath } from 'url';
 
-const TASKS_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), FILES.TASKS);
+// Allow overriding the tasks file for integration testing via environment variable
+const TASKS_FILE = process.env.TASKS_FILE_PATH ?? path.join(path.dirname(fileURLToPath(import.meta.url)), FILES.TASKS);
 
 export async function write_task(task: string) {
   // Ensure the task content is appended exactly as provided
