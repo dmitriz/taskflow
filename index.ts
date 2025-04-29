@@ -1,1 +1,3 @@
-export { fetch_emails } from './fetch-emails.js';
+if (require.main === module) {
+  import('./fetch-emails.js').then(({ fetch_emails }) => fetch_emails());
+}

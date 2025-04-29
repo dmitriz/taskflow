@@ -40,6 +40,12 @@ export async function fetch_and_process_emails() {
           ? decode_base64(payload.parts[0].body.data)
           : null;
 
+      // Filter out HTML parts if present
+      if (payload?.mimeType === 'text/html') {
+        console.warn(`Skipping HTML email with ID: ${msgId}`);
+        continue;
+      }
+
       if (!body) continue;
 
       const cleanBody = remove_signature(body.trim());
@@ -52,8 +58,12 @@ export async function fetch_and_process_emails() {
         id: msgId,
         requestBody: { removeLabelIds: ['UNREAD'] },
       });
+
+      console.log(`Processed email with ID: ${msgId}`);
     } catch (err) {
       console.error(`Failed processing message ${msgId}:`, err);
     }
   }
 }
+
+export { fetch_and_process_emails as fetch_emails };

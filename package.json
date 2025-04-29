@@ -10,10 +10,10 @@
     }
   },
   "scripts": {
-    "start": "tsx fetch-emails.ts",
+    "start": "node dist/fetch-emails.js",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "build": "tsc",
+    "build": "tsc && cp -r secrets dist/secrets",
     "prepublish": "npm run build"
   },
   "dependencies": {
