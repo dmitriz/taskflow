@@ -1,0 +1,11 @@
+node_modules/
+dist/
+out/
+*.log
+*.tsbuildinfo
+secrets/
+coverage/
+tasks.md
+.vscode/
+.idea/
+.DS_Store

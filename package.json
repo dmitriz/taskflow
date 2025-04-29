@@ -1,0 +1,22 @@
+{
+  "name": "gmail-task-capture",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx fetch-emails.ts",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "googleapis": "^131.0.0",
+    "open": "^8.4.0",
+    "server-destroy": "^1.0.1",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/server-destroy": "^1.0.4",
+    "nock": "^13.3.0",
+    "vitest": "^3.1.2"
+  }
+}

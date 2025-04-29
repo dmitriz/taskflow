@@ -1,0 +1,11 @@
+export enum SETTINGS {
+  MAX_EMAILS_TO_FETCH = 10,
+}
+
+export enum QUERY_FILTERS {
+  SELF_SENT_UNREAD = 'is:unread from:me to:me',
+}
+
+export enum SIGNATURE {
+  SEPARATOR = 'Best wishes',
+}
