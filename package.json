@@ -13,7 +13,7 @@
     "start": "node dist/fetch-emails.js",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "build": "tsc && cp -r secrets dist/secrets",
+    "build": "tsc && [ -d secrets ] && cp -r secrets dist/secrets || echo 'No secrets directory to copy'",
     "prepublish": "npm run build"
   },
   "dependencies": {
