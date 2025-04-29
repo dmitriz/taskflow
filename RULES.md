@@ -1,6 +1,12 @@
-# Project Coding Standards and Principles
+# Gmail Task Capture: Coding Standards and Principles
 
-This document defines the general coding rules, architectural principles, and technology agreements for the Gmail Task Capture system.
+- [Section 1: Code Organization](#section-1-code-organization)
+- [Section 2: API Integration](#section-2-api-integration)
+- [Section 3: Email Processing Logic](#section-3-email-processing-logic)
+- [Section 4: Testing Standards](#section-4-testing-standards)
+- [Section 5: Coverage and Reporting](#section-5-coverage-and-reporting)
+- [Section 6: Project Cleanliness Rules](#section-6-project-cleanliness-rules)
+- [Section 7: Copilot Prompting Standards](#section-7-copilot-prompting-standards)
 
 ## Section 1: Code Organization
 
@@ -17,10 +23,7 @@ This document defines the general coding rules, architectural principles, and te
   - `https://www.googleapis.com/auth/gmail.readonly`
   - `https://www.googleapis.com/auth/gmail.modify`
 - Processed emails are marked as read after task extraction.
-
-## Section 3: Email Processing Logic
-
-- Only self-sent, unread emails are fetched using the query: `is:unread from:me to:me`.
+- Tasks are separated by a configurable number of newlines, defined in `SETTINGS.NEWLINES_AFTER_TASK` within `config.ts`.
 - The maximum number of emails to fetch is configurable in the config file.
 - Only plaintext email bodies are extracted; HTML is ignored.
 - Signatures are removed based on a configurable separator text (e.g., "Best wishes").
@@ -38,9 +41,9 @@ This document defines the general coding rules, architectural principles, and te
 
 ## Section 5: Coverage and Reporting
 
-- Code coverage is enabled using `c8` via Vitest.
+- Code coverage is enabled using `c8` via `Vitest`.
 - Coverage is available in both text output and HTML reports.
-- The coverage folder is excluded from Git via `.gitignore`.
+- The `coverage` folder is excluded from Git via `.gitignore`.
 
 ## Section 6: Project Cleanliness Rules
 
@@ -59,7 +62,15 @@ This document defines the general coding rules, architectural principles, and te
   - No explanations, no extra conversation, no ending notes.
 - Content must be ready for direct Copilot parsing without manual corrections.
 
----
+### Example Prompt
 
-**Final Note**:  
+```json
+{
+  "file": "example.js",
+  "content": "console.log('Hello, world!');"
+}
+```
+
+## Final Note
+
 This project is designed for maximum automation, minimalism, reliability, and future publishing readiness.

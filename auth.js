@@ -59,14 +59,28 @@ async function load_saved_credentials_if_exist() {
     }
 }
 async function save_credentials(client) {
-    const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
-    const keys = JSON.parse(content);
-    const key = keys.installed || keys.web;
-    const payload = {
-        type: 'authorized_user',
-        client_id: key.client_id,
-        client_secret: key.client_secret,
-        refresh_token: client.credentials.refresh_token,
-    };
-    await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
+    try {
+        const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
+        const keys = JSON.parse(content);
+        const key = keys.installed || keys.web;
+
+        // Validate refresh_token
+        if (!client.credentials.refresh_token) {
+            throw new Error('Missing refresh_token in client credentials.');
+        }
+
+        const payload = {
+            type: 'authorized_user',
+            client_id: key.client_id,
+            client_secret: key.client_secret,
+            refresh_token: client.credentials.refresh_token,
+        };
+
+        // Write token with restricted permissions
+        await fs.writeFile(TOKEN_PATH, JSON.stringify(payload), { mode: 0o600 });
+    } catch (error) {
+        // Sanitize error message
+        console.error('Failed to save credentials. Please check your configuration.');
+        throw error;
+    }
 }
