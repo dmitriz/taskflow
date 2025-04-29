@@ -2,11 +2,19 @@
   "name": "gmail-task-capture",
   "version": "1.0.0",
   "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
   "scripts": {
     "start": "tsx fetch-emails.ts",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "setup": "bash setup.sh"
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "googleapis": "^131.0.0",

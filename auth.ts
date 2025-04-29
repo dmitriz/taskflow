@@ -12,8 +12,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CREDENTIALS_PATH = path.join(__dirname, 'secrets', FILES.CREDENTIALS);
 const TOKEN_PATH = path.join(__dirname, 'secrets', FILES.TOKEN);
 
-export async function authorize() {
-  let client = await loadSavedCredentialsIfExist();
+export async function authorize_user() {
+  let client = await load_saved_credentials_if_exist();
   if (client) return client;
 
   const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
@@ -50,7 +50,7 @@ export async function authorize() {
 
       const tokenResponse = await oAuth2Client.getToken(code);
       oAuth2Client.setCredentials(tokenResponse.tokens);
-      await saveCredentials(oAuth2Client);
+      await save_credentials(oAuth2Client);
     }
   }).listen(3000);
 
@@ -62,7 +62,7 @@ export async function authorize() {
   });
 }
 
-async function loadSavedCredentialsIfExist() {
+async function load_saved_credentials_if_exist() {
   try {
     const content = await fs.readFile(TOKEN_PATH, 'utf8');
     const credentials = JSON.parse(content);
@@ -72,7 +72,7 @@ async function loadSavedCredentialsIfExist() {
   }
 }
 
-async function saveCredentials(client: any) {
+async function save_credentials(client: any) {
   const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
   const keys = JSON.parse(content);
   const key = keys.installed || keys.web;

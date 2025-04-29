@@ -86,7 +86,7 @@ vi.mock('googleapis', () => {
 
 // Simple mock for auth
 vi.mock('./auth.js', () => ({
-  authorize: vi.fn().mockResolvedValue({})
+  authorize_user: vi.fn().mockResolvedValue({})
 }));
 
 beforeEach(() => {
@@ -124,8 +124,8 @@ it('fetches emails and writes tasks', async () => {
     .reply(200, {});
 
   // Simulate the behavior of fetch-emails.js by manually calling the processor
-  const { fetchAndProcessEmails } = await import('./email-processor.js');
-  await fetchAndProcessEmails();
+  const { fetch_emails } = await import('./email-processor.js');
+  await fetch_emails();
 
   const content = await fs.readFile(TASKS_PATH, 'utf8');
   expect(content).toContain('- Test task');

@@ -1,6 +1,6 @@
 import { SIGNATURE } from './config.js';
 
-export function removeSignature(emailBody: string): string {
+export function remove_signature(emailBody: string): string {
   const separatorIndex = emailBody.indexOf(SIGNATURE.SEPARATOR);
   if (separatorIndex === -1) {
     return emailBody.trim();

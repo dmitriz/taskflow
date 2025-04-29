@@ -1,16 +1,16 @@
 import { google } from 'googleapis';
-import { authorize } from './auth.js';
-import { removeSignature } from './remove-signature.js';
-import { writeTask } from './tasks-writer.js';
+import { authorize_user } from './auth.js';
+import { remove_signature } from './remove-signature.js';
+import { write_task } from './tasks-writer.js';
 import { SETTINGS, QUERY_FILTERS } from './config.js';
 import { OAuth2Client } from 'google-auth-library';
 
-function decodeBase64(data: string): string {
+function decode_base64(data: string): string {
   return Buffer.from(data, 'base64').toString('utf-8');
 }
 
-export async function fetchAndProcessEmails() {
-  const auth = await authorize() as OAuth2Client;
+export async function fetch_emails() {
+  const auth = await authorize_user() as OAuth2Client;
   const gmail = google.gmail({ version: 'v1', auth });
 
   const listResponse = await gmail.users.messages.list({
@@ -35,17 +35,17 @@ export async function fetchAndProcessEmails() {
 
       const payload = msgData.data.payload;
       let body = payload?.body?.data
-        ? decodeBase64(payload.body.data)
+        ? decode_base64(payload.body.data)
         : payload?.parts?.[0]?.body?.data
-          ? decodeBase64(payload.parts[0].body.data)
+          ? decode_base64(payload.parts[0].body.data)
           : null;
 
       if (!body) continue;
 
-      const cleanBody = removeSignature(body.trim());
+      const cleanBody = remove_signature(body.trim());
       const lines = cleanBody.split('\n');
-      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map(l => l.trim()).join('\n')}`;
-      await writeTask(formatted);
+      const formatted = `- ${lines[0].trim()}\n${lines.slice(1).map((l: string) => l.trim()).join('\n')}`;
+      await write_task(formatted);
 
       await gmail.users.messages.modify({
         userId: 'me',
