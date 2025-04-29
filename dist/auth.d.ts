@@ -1,1 +1,1 @@
-export declare function authorize_user(): Promise<unknown>;
+export declare function authorize(): Promise<unknown>;

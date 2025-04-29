@@ -4,12 +4,10 @@ import path from 'path';
 import http from 'http';
 import { default as open } from 'open';
 import destroyer from 'server-destroy';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const CREDENTIALS_PATH = path.join(__dirname, 'secrets', 'credentials.json');
-const TOKEN_PATH = path.join(__dirname, 'secrets', 'token.json');
+// Use CommonJS __dirname approach
+const CREDENTIALS_PATH = path.join(process.cwd(), 'secrets', 'credentials.json');
+const TOKEN_PATH = path.join(process.cwd(), 'secrets', 'token.json');
 
 export async function authorize() {
   let client = await loadSavedCredentialsIfExist();

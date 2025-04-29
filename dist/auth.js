@@ -1,43 +1,26 @@
-import { google } from 'googleapis';
-import fs from 'fs/promises';
-import path from 'path';
-import http from 'http';
-import { default as open } from 'open';
-import destroyer from 'server-destroy';
-import { fileURLToPath } from 'url';
-import { FILES, SETTINGS } from './config.js';
-import crypto from 'crypto';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CREDENTIALS_PATH = path.join(__dirname, 'secrets', FILES.CREDENTIALS);
-const TOKEN_PATH = path.join(__dirname, 'secrets', FILES.TOKEN);
-// Load key from environment or generate a fallback for development only
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
-    ? Buffer.from(process.env.ENCRYPTION_KEY, 'hex')
-    : crypto.randomBytes(32);
-const IV_LENGTH = 16;
-function encrypt(text) {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-cbc', ENCRYPTION_KEY, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return `${iv.toString('hex')}:${encrypted}`;
-}
-function decrypt(text) {
-    const [iv, encrypted] = text.split(':');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', ENCRYPTION_KEY, Buffer.from(iv, 'hex'));
-    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-}
-export async function authorize_user() {
-    const client = await load_saved_credentials_if_exist();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authorize = authorize;
+const googleapis_1 = require("googleapis");
+const promises_1 = __importDefault(require("fs/promises"));
+const path_1 = __importDefault(require("path"));
+const http_1 = __importDefault(require("http"));
+const open_1 = __importDefault(require("open"));
+const server_destroy_1 = __importDefault(require("server-destroy"));
+// Use CommonJS __dirname approach
+const CREDENTIALS_PATH = path_1.default.join(process.cwd(), 'secrets', 'credentials.json');
+const TOKEN_PATH = path_1.default.join(process.cwd(), 'secrets', 'token.json');
+async function authorize() {
+    let client = await loadSavedCredentialsIfExist();
     if (client)
         return client;
-    const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
+    const content = await promises_1.default.readFile(CREDENTIALS_PATH, 'utf8');
     const credentials = JSON.parse(content);
     const { client_secret, client_id } = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, SETTINGS.OAUTH_REDIRECT_URI // Use configurable redirect URI
-    );
+    const oAuth2Client = new googleapis_1.google.auth.OAuth2(client_id, client_secret, 'http://localhost:3000/oauth2callback');
     const authorizeUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: [
@@ -45,8 +28,8 @@ export async function authorize_user() {
             'https://www.googleapis.com/auth/gmail.modify',
         ],
     });
-    await open(authorizeUrl);
-    const server = http.createServer(async (req, res) => {
+    await (0, open_1.default)(authorizeUrl);
+    const server = http_1.default.createServer(async (req, res) => {
         const url = req.url || '';
         if (url.indexOf('/oauth2callback') > -1) {
             const qs = new URL(url, 'http://localhost:3000').searchParams;
@@ -59,43 +42,35 @@ export async function authorize_user() {
             server.destroy();
             const tokenResponse = await oAuth2Client.getToken(code);
             oAuth2Client.setCredentials(tokenResponse.tokens);
-            await save_credentials(oAuth2Client);
+            await saveCredentials(oAuth2Client);
         }
     }).listen(3000);
-    destroyer(server);
+    (0, server_destroy_1.default)(server);
     return new Promise(resolve => {
         server.on('close', () => {
             resolve(oAuth2Client);
         });
     });
 }
-async function load_saved_credentials_if_exist() {
+async function loadSavedCredentialsIfExist() {
     try {
-        const content = await fs.readFile(TOKEN_PATH, 'utf8');
+        const content = await promises_1.default.readFile(TOKEN_PATH, 'utf8');
         const credentials = JSON.parse(content);
-        credentials.refresh_token = decrypt(credentials.refresh_token);
-        return google.auth.fromJSON(credentials);
+        return googleapis_1.google.auth.fromJSON(credentials);
     }
     catch {
         return null;
     }
 }
-async function save_credentials(client) {
-    try {
-        const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
-        const keys = JSON.parse(content);
-        const key = keys.installed || keys.web;
-        const payload = {
-            type: 'authorized_user',
-            client_id: key.client_id,
-            client_secret: key.client_secret,
-            refresh_token: encrypt(client.credentials.refresh_token || ''),
-        };
-        await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
-    }
-    catch (error) {
-        console.error('Failed to save credentials:', error);
-        throw error;
-    }
+async function saveCredentials(client) {
+    const content = await promises_1.default.readFile(CREDENTIALS_PATH, 'utf8');
+    const keys = JSON.parse(content);
+    const key = keys.installed || keys.web;
+    const payload = {
+        type: 'authorized_user',
+        client_id: key.client_id,
+        client_secret: key.client_secret,
+        refresh_token: client.credentials.refresh_token,
+    };
+    await promises_1.default.writeFile(TOKEN_PATH, JSON.stringify(payload));
 }
-//# sourceMappingURL=auth.js.map

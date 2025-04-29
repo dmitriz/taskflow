@@ -1,1 +1,1 @@
-export declare function remove_signature(email_body: string): string;
+export declare function removeSignature(emailBody: string): string;

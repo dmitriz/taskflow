@@ -1,11 +1,31 @@
 {
   "name": "gmail-task-capture",
   "version": "1.0.0",
-  "type": "module",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "description": "A tool to capture tasks from self-sent Gmail emails and save them to a Markdown file",
+  "keywords": ["gmail", "task", "capture", "productivity", "email"],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/gmail-task-capture.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "start": "tsx fetch-emails.ts",
     "test": "vitest run",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "build": "tsc",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "dependencies": {
     "googleapis": "^131.0.0",
@@ -17,6 +37,7 @@
     "@types/node": "^22.15.3",
     "@types/server-destroy": "^1.0.4",
     "nock": "^13.3.0",
+    "typescript": "^5.0.0",
     "vitest": "^3.1.2"
   }
 }

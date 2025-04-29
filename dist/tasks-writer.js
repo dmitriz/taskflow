@@ -1,30 +1,12 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { SETTINGS, FILES } from './config.js';
-import { fileURLToPath } from 'url';
-// Allow overriding the tasks file for integration testing via environment variable
-const TASKS_FILE = process.env.TASKS_FILE_PATH ?? path.join(path.dirname(fileURLToPath(import.meta.url)), FILES.TASKS);
-export async function write_task(task) {
-    // Ensure the task content is appended exactly as provided
-    const newlines = '\n'.repeat(SETTINGS.NEWLINES_AFTER_TASK);
-    // SETTINGS.NEWLINES_AFTER_TASK determines the number of newlines to append after each task
-    try {
-        await fs.appendFile(TASKS_FILE, `${task}${newlines}`, 'utf8');
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            console.error(`Failed to write task: ${error.message}`);
-        }
-        else {
-            console.error('Failed to write task: Unknown error');
-        }
-        throw error;
-    }
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.writeTask = writeTask;
+const promises_1 = __importDefault(require("fs/promises"));
+const path_1 = __importDefault(require("path"));
+const TASKS_FILE = path_1.default.join(process.cwd(), 'tasks.md');
+async function writeTask(task) {
+    await promises_1.default.appendFile(TASKS_FILE, task + '\n\n\n', 'utf8');
 }
-export async function write_tasks(tasks) {
-    // Ensure all tasks are appended in a single batch
-    const newlines = '\n'.repeat(SETTINGS.NEWLINES_AFTER_TASK);
-    const content = tasks.map(task => `${task}${newlines}`).join('');
-    await fs.appendFile(TASKS_FILE, content, 'utf8');
-}
-//# sourceMappingURL=tasks-writer.js.map
