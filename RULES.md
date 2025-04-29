@@ -3,6 +3,13 @@
 - [Section 1: Code Organization](#section-1-code-organization)
 - [Section 2: API Integration](#section-2-api-integration)
 - [Section 3: Email Processing Logic](#section-3-email-processing-logic)
+
+## Section 3: Email Processing Logic
+
+- Emails are fetched using the Gmail API.
+- Tasks are extracted from email bodies based on predefined patterns.
+- Duplicate tasks are filtered out before appending to `tasks.md`.
+- Errors during email processing are logged for debugging purposes.
 - [Section 4: Testing Standards](#section-4-testing-standards)
 - [Section 5: Coverage and Reporting](#section-5-coverage-and-reporting)
 - [Section 6: Project Cleanliness Rules](#section-6-project-cleanliness-rules)
@@ -28,7 +35,7 @@
 - Only plaintext email bodies are extracted; HTML is ignored.
 - Signatures are removed based on a configurable separator text (e.g., "Best wishes").
 - Original paragraph formatting inside emails is preserved.
-- Tasks are separated by two newlines between entries.
+- Tasks are separated by configurable newlines between entries, as defined in `SETTINGS.NEWLINES_AFTER_TASK`.
 
 ## Section 4: Testing Standards
 

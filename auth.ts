@@ -14,7 +14,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CREDENTIALS_PATH = path.join(__dirname, 'secrets', FILES.CREDENTIALS);
 const TOKEN_PATH = path.join(__dirname, 'secrets', FILES.TOKEN);
 
-const ENCRYPTION_KEY = crypto.randomBytes(32); // Replace with a securely stored key
+// Load key from environment or generate a fallback for development only
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
+  ? Buffer.from(process.env.ENCRYPTION_KEY, 'hex')
+  : crypto.randomBytes(32);
 const IV_LENGTH = 16;
 
 function encrypt(text: string): string {
@@ -34,7 +37,7 @@ function decrypt(text: string): string {
 }
 
 export async function authorize_user() {
-  let client = await load_saved_credentials_if_exist();
+  const client = await load_saved_credentials_if_exist();
   if (client) return client;
 
   const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');

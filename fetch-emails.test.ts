@@ -8,7 +8,7 @@ const TASKS_PATH = path.join(process.cwd(), FILES.TASKS);
 
 // Mock fs/promises module with proper default export
 vi.mock('fs/promises', async () => {
-  const mockReadFile = vi.fn().mockImplementation((path, options) => {
+  const mockReadFile = vi.fn().mockImplementation((path) => {
     // Mock credentials file
     if (path.includes('credentials.json')) {
       return Promise.resolve(JSON.stringify({
