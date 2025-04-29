@@ -1,19 +1,24 @@
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import { defineConfig } from "eslint/config";
+import typescriptPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 
-
-export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.{js,mjs,cjs,ts}"], languageOptions: { globals: {
-  process: 'readonly',
-  Buffer: 'readonly',
-  require: 'readonly',
-  module: 'readonly',
-  URL: 'readonly',
-  console: 'readonly',
-  document: 'readonly',
-  window: 'readonly',
-}, } },
-  tseslint.configs.recommended,
-]);
+export default [
+  {
+    ignores: ["coverage/**", "dist/**", "secrets/**"],
+  },
+  {
+    files: ["**/*.ts", "**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parser: tsParser,
+    },
+    plugins: {
+      "@typescript-eslint": typescriptPlugin,
+    },
+    rules: {
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  },
+];
