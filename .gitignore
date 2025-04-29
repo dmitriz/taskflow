@@ -9,3 +9,8 @@ tasks.md
 .vscode/
 .idea/
 .DS_Store
+# Exclude generated JavaScript and declaration files in root directory
+/*.js
+/*.d.ts
+!eslint.config.js
+!vitest.config.js
