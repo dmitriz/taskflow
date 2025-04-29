@@ -5,6 +5,7 @@ import { SETTINGS, FILES } from './config.js';
 const TASKS_FILE = path.join(process.cwd(), FILES.TASKS);
 
 export async function write_task(task: string) {
+  // SETTINGS.NEWLINES_AFTER_TASK represents the number of newlines to add after each task
   const newlines = '\n'.repeat(SETTINGS.NEWLINES_AFTER_TASK);
   await fs.appendFile(TASKS_FILE, task + newlines, 'utf8');
 }

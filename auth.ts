@@ -73,14 +73,19 @@ async function load_saved_credentials_if_exist() {
 }
 
 async function save_credentials(client: any) {
-  const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
-  const payload = {
-    type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  };
-  await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
+  try {
+    const content = await fs.readFile(CREDENTIALS_PATH, 'utf8');
+    const keys = JSON.parse(content);
+    const key = keys.installed || keys.web;
+    const payload = {
+      type: 'authorized_user',
+      client_id: key.client_id,
+      client_secret: key.client_secret,
+      refresh_token: client.credentials.refresh_token,
+    };
+    await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
+  } catch (error) {
+    console.error('Failed to save credentials:', error);
+    throw error;
+  }
 }
