@@ -15,7 +15,8 @@
     "coverage": "vitest run --coverage",
     "build": "tsc && [ -d secrets ] && cp -r secrets dist/secrets || echo 'No secrets directory to copy'",
     "prepublish": "npm run build",
-    "lint": "eslint . --ext .ts,.js"
+    "lint": "eslint . --ext .ts,.js",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "googleapis": "^131.0.0",
